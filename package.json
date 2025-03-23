@@ -1,0 +1,62 @@
+{
+  "name": "zephyrbuild",
+  "displayName": "zephyr-build",
+  "description": "Build Zephyr Projects and Flash",
+  "version": "0.0.1",
+  "publisher": "ToneyAbraham",
+  "author": {
+    "name": "Toney Abraham",
+    "email": "toneyabraham37@gmail.com"
+  },
+  "engines": {
+    "vscode": "^1.98.0"
+  },
+  "categories": [
+    "Other"
+  ],
+  "activationEvents": [
+    "onCommand:zephyrbuild.runBuild",
+    "onCommand:zephyrbuild.runExtensionCommand"
+  ],
+  "main": "./out/extension.js",
+  "contributes": {
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "zephyrbuildSidebar",
+          "title": "Zephyr Build",
+          "icon": "resources/icon.svg"
+        }
+      ]
+    },
+    "views": {
+      "zephyrbuildSidebar": [
+        {
+          "id": "zephyrbuildView",
+          "name": "Zephyr",
+          "type": "webview",
+          "icon": "resources/icon.svg"
+        }
+      ]
+    }
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run compile",
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./",
+    "pretest": "npm run compile && npm run lint",
+    "lint": "eslint src",
+    "test": "vscode-test"
+  },
+  "devDependencies": {
+    "@types/vscode": "^1.98.0",
+    "@types/mocha": "^10.0.10",
+    "@types/node": "20.x",
+    "@typescript-eslint/eslint-plugin": "^8.25.0",
+    "@typescript-eslint/parser": "^8.25.0",
+    "eslint": "^9.21.0",
+    "typescript": "^5.7.3",
+    "@vscode/test-cli": "^0.0.10",
+    "@vscode/test-electron": "^2.4.1"
+  }
+}
