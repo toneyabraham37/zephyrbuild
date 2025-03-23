@@ -8,6 +8,10 @@
     "name": "Toney Abraham",
     "email": "toneyabraham37@gmail.com"
   },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/toneyabraham37/zephyrbuild.git"
+  },
   "engines": {
     "vscode": "^1.98.0"
   },
@@ -25,7 +29,7 @@
         {
           "id": "zephyrbuildSidebar",
           "title": "Zephyr Build",
-          "icon": "resources/icon.svg"
+          "icon": "resources/icon.png"
         }
       ]
     },
@@ -35,10 +39,16 @@
           "id": "zephyrbuildView",
           "name": "Zephyr",
           "type": "webview",
-          "icon": "resources/icon.svg"
+          "icon": "resources/icon.png"
         }
       ]
-    }
+    },
+    "commands": [
+      {
+        "command": "zephyrbuild.activateVenv",
+        "title": "Activate Virtual Environment"
+      }
+    ]
   },
   "scripts": {
     "vscode:prepublish": "npm run compile",
