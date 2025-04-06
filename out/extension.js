@@ -34,6 +34,7 @@ var __importStar = (this && this.__importStar) || (function () {
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.activate = activate;
+const os = __importStar(require("os"));
 const fs = __importStar(require("fs"));
 const path = __importStar(require("path"));
 const vscode = __importStar(require("vscode"));
@@ -71,12 +72,18 @@ function getOrCreateTerminal() {
     terminal.show();
     return terminal;
 }
-function findVenvDirectory(startPath) {
+function findVenvActivateScript(startPath) {
     let currentDir = startPath;
     while (currentDir !== path.parse(currentDir).root) {
-        const venvPath = path.join(currentDir, '.venv');
-        if (fs.existsSync(venvPath) && fs.statSync(venvPath).isDirectory()) {
-            return venvPath;
+        const venvDir = path.join(currentDir, '.venv');
+        if (fs.existsSync(venvDir) && fs.statSync(venvDir).isDirectory()) {
+            const isWindows = os.platform() === 'win32';
+            const activateScript = isWindows
+                ? path.join(venvDir, 'Scripts', 'activate.bat')
+                : path.join(venvDir, 'bin', 'activate');
+            if (fs.existsSync(activateScript)) {
+                return activateScript;
+            }
         }
         currentDir = path.dirname(currentDir);
     }
@@ -88,9 +95,10 @@ function activate(context) {
     const disposableActivateVenv = vscode.commands.registerCommand('zephyrbuild.activateVenv', () => {
         const terminal = getOrCreateTerminal();
         const workspacePath = vscode.workspace.workspaceFolders?.[0]?.uri.fsPath || '';
-        const venvPath = findVenvDirectory(workspacePath);
+        const venvPath = findVenvActivateScript(workspacePath);
+        console.log(venvPath);
         if (venvPath) {
-            terminal.sendText('. ' + path.join(venvPath, 'bin', 'activate'));
+            terminal.sendText(venvPath);
             vscode.window.showInformationMessage('Virtual environment activated.');
         }
         else {

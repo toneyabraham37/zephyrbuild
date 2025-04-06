@@ -1,3 +1,4 @@
+import * as os from 'os';
 import * as fs from 'fs';
 import * as path from 'path';
 import * as vscode from 'vscode';
@@ -46,13 +47,21 @@ function getOrCreateTerminal() {
 	return terminal;
 }
 
-function findVenvDirectory(startPath: string): string | null {
+function findVenvActivateScript(startPath: string): string | null {
 	let currentDir = startPath;
 
 	while (currentDir !== path.parse(currentDir).root) {
-		const venvPath = path.join(currentDir, '.venv');
-		if (fs.existsSync(venvPath) && fs.statSync(venvPath).isDirectory()) {
-			return venvPath;
+		const venvDir = path.join(currentDir, '.venv');
+		if (fs.existsSync(venvDir) && fs.statSync(venvDir).isDirectory()) {
+			const isWindows = os.platform() === 'win32';
+
+			const activateScript = isWindows
+				? path.join(venvDir, 'Scripts', 'activate.bat') 
+				: path.join(venvDir, 'bin', 'activate');
+
+			if (fs.existsSync(activateScript)) {
+				return activateScript;
+			}
 		}
 		currentDir = path.dirname(currentDir);
 	}
@@ -68,10 +77,11 @@ export function activate(context: vscode.ExtensionContext) {
 	const disposableActivateVenv = vscode.commands.registerCommand('zephyrbuild.activateVenv', () => {
 		const terminal = getOrCreateTerminal();
 		const workspacePath = vscode.workspace.workspaceFolders?.[0]?.uri.fsPath || '';
-		const venvPath = findVenvDirectory(workspacePath);
+		const venvPath = findVenvActivateScript(workspacePath);
+		console.log(venvPath);
 
 		if (venvPath) {
-			terminal.sendText('. ' + path.join(venvPath, 'bin', 'activate'));
+			terminal.sendText(venvPath);
 			vscode.window.showInformationMessage('Virtual environment activated.');
 		} else {
 			vscode.window.showErrorMessage('No virtual environment (.venv) found.');

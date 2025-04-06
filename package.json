@@ -2,8 +2,9 @@
   "name": "zephyrbuild",
   "displayName": "zephyr-build",
   "description": "Build Zephyr Projects and Flash",
-  "version": "0.0.1",
+  "version": "0.0.3",
   "publisher": "ToneyAbraham",
+  "icon": "resources/icon.png",
   "author": {
     "name": "Toney Abraham",
     "email": "toneyabraham37@gmail.com"
